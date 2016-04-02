@@ -1,0 +1,37 @@
+type: map
+mapping:
+  "env":
+    type: seq
+    required: yes
+    sequence:
+      - type: str
+        required: yes
+        # Pattern matches an assignment string as bellow:
+        # FOO=foo foo BAR="bar = bar" COO=coo = coo
+        pattern: (\w+)=((.|\s)*?)((?=\w+=)|$)
+
+  "script":
+    type: seq
+    required: yes
+    sequence:
+      - { type: str, required: yes }
+
+  "before_script":
+    type: seq
+    sequence:
+      - type: str
+
+  "after_script":
+    type: seq
+    sequence:
+      - type: str
+
+  "after_success":
+    type: seq
+    sequence:
+      - type: str
+
+  "after_failure":
+    type: seq
+    sequence:
+      - type: str
