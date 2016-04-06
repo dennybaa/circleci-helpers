@@ -1,0 +1,10 @@
+env:
+  - FOO=foo
+before_script:
+  - export FOO=bar
+  - export BAR=bar
+  - echo -n $FOO
+script:
+  - /bin/true
+after_script:
+  - echo -n "${FOO}${BAR}"

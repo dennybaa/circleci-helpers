@@ -1,0 +1,6 @@
+env:
+  - VERSION=foo
+before_script:
+  - exit 2
+script:
+  - exit 1
