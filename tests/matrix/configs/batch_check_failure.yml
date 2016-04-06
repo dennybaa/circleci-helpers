@@ -1,0 +1,15 @@
+env:
+  - VERSION=world0
+  - VERSION=world1
+before_script:
+  - export HELLO=Hello
+script:
+  - "echo ${HELLO} ${VERSION}"
+  - exit 1
+after_failure:
+  - echo 'failure'
+after_success:
+  - echo 'success'
+after_script:
+  # Called in any case after after_failure or after_success
+  - echo 'after_script'

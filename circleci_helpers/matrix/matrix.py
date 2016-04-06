@@ -48,15 +48,15 @@ class Matrix(object):
             sys.exit(1)
 
         # Execute and exit
-        self.step = step
-        exitcode = self._execute()
+        exitcode = self._execute(step)
         if exitcode:
             sys.exit(exitcode)
 
-    def _execute(self):
-        # Brining matrix to initial state
+    def _execute(self, step):
+        # Brining matrix to initial state and set step number
         self.batchenv = None
         self.script_exitcode = 0
+        self.step = step
 
         for seq in self.SEQUENCE:
             try:
