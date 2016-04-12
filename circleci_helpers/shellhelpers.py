@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+from collections import namedtuple
+
 import sys
 import os
 import subprocess
 import select
 import io
 import re
-
-from collections import namedtuple
 
 # Regex matches assignments: FOO=foo foo BAR="bar = bar" COO=coo = coo
 ENV_ASSIGNMENT = re.compile(r'(\w+)=((.|\s)*?)((?=\w+=)|$)')
@@ -43,7 +44,7 @@ def shell_out(command, env=None, shell='/bin/bash', stdin=None):
 
     # Check if stdin provided as string or a file.
     if stdin and isinstance(stdin, str):
-        proc.stdin.write(stdin)
+        proc.stdin.write(stdin.encode('utf-8'))
         proc.stdin.close()
     elif stdin and (hasattr(stdin, 'fileno') and hasattr(stdin, 'read')):
         fdlist.append(stdin)
@@ -57,15 +58,17 @@ def shell_out(command, env=None, shell='/bin/bash', stdin=None):
         for fd in ios[0]:
             if fd == stdin:
                 data = stdin.read(io.DEFAULT_BUFFER_SIZE)
-                proc.stdin.write(data)
+                proc.stdin.write(data.encode('utf-8'))
                 # Finish proc stdin processing since source eof is reached.
                 if not data:
                     fdlist.remove(stdin)
                     proc.stdin.close()
             elif fd == proc.stdout:
-                sys.stdout.write(proc.stdout.read(io.DEFAULT_BUFFER_SIZE))
+                data = proc.stdout.read(io.DEFAULT_BUFFER_SIZE)
+                sys.stdout.write(data.decode('utf-8'))
             else:
-                sys.stderr.write(proc.stderr.read(io.DEFAULT_BUFFER_SIZE))
+                data = proc.stderr.read(io.DEFAULT_BUFFER_SIZE)
+                sys.stderr.write(data.decode('utf-8'))
 
         if proc.poll() is not None:
             break
