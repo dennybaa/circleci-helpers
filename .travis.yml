@@ -1,9 +1,19 @@
 language: python
+python:
+  - 2.7
+  - 3.3
+  - 3.4
+  - 3.5
+
+matrix:
+  fast_finish: true
+
 install:
+  - pip install --upgrade pip tox-travis
   - pip install -r dev-requirements.txt
 
 # Tox handles all setup and teardown of testenv
-script: 
+script:
   - coverage erase
   - tox
 

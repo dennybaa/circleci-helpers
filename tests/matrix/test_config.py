@@ -31,7 +31,7 @@ def test_validate_schema_noenv():
     yaml_data = "script:\n  - /bin/true\n"
     c = Config(config_data=yaml_data)
     with pytest.raises(YAMLFileValidationError):
-        print c.config
+        _ = c.config
 
 
 def test_validate_schema_unknown_key():
@@ -40,7 +40,7 @@ def test_validate_schema_unknown_key():
                 "foo: bar"
     c = Config(config_data=yaml_data)
     with pytest.raises(YAMLFileValidationError):
-        print c.config
+        _ = c.config
 
 
 def test_validate_schema_required():
@@ -51,7 +51,7 @@ def test_validate_schema_required():
     c = Config(config_data=yaml_data)
     # Fails since script key is not provided
     with pytest.raises(YAMLFileValidationError):
-        print c.config
+        _ = c.config
 
 
 def test_validate_schema_env_list():
@@ -63,7 +63,7 @@ def test_validate_schema_env_list():
     yaml_data = "env:\n  - FOO+foo\nscript:\n  - /bin/true\n"
     c = Config(config_data=yaml_data)
     with pytest.raises(YAMLFileValidationError):
-        print c.config
+        _ = c.config
 
 
 def test_default_config_pickup(tmpdir):
