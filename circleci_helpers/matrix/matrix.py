@@ -29,6 +29,7 @@ class Matrix(object):
         self.script_exitcode = 0
         self.batchenv = None
         self.step = None
+        self.failed = False
 
     def get_matrixenv(self):
         '''Get matrix environment'''
@@ -37,6 +38,28 @@ class Matrix(object):
         self.log.debug('***** STEP ENVIRONMENT *****\n%s', ' '.join(envdebug))
 
         return env
+
+    def failure_allowed(self):
+        hashlist = self.config.get('matrix', {}).get('allow_failures', [])
+
+        # by default failures are not allowed
+        if len(hashlist) == 0:
+            return False
+
+        # If batch environment variables value differs from the allowed
+        # then failure is not allowed.
+        for ahash in hashlist:
+            failenv = readenv(ahash['env'])
+            allset = True
+            for k, v in failenv.items():
+                if self.batchenv.get(k) != v:
+                    allset = False
+                    break
+
+            if allset:
+                return True
+
+        return False
 
     def execute(self, step):
         '''Matrix step execution method'''
@@ -47,9 +70,8 @@ class Matrix(object):
                            "index out of range!", self.step)
             sys.exit(1)
 
-        # Execute and exit
         exitcode = self._execute(step)
-        if exitcode:
+        if not self.failure_allowed and exitcode > 0:
             sys.exit(exitcode)
 
     def _execute(self, step):
@@ -62,8 +84,11 @@ class Matrix(object):
             try:
                 getattr(self, seq)()
             except BatchTerminated as e:
+                self.failed = True
                 return e.exitcode
 
+        # Don't reset self.failed (it's already)
+        self.failed = True if self.failed else self.script_exitcode > 0
         return self.script_exitcode
 
     def before_script(self):

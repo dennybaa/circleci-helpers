@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import pytest
 from circleci_helpers.matrix.matrix import Matrix, BatchTerminated
 
@@ -26,8 +27,8 @@ def test_matrix_batch_environment(capsys):
     assert out == 'foofoobar'
 
 
-def _check_batch(capsys, success_or_failure, exitcode):
-    m = Matrix(config_path=DATADIR + 'batch_check_{}.yml'.format(success_or_failure))
+def _check_batch(capsys, config_path, success_or_failure, exitcode):
+    m = Matrix(config_path=config_path)
     for i in range(0, len(m.config['env'])):
         _exitcode = m._execute(step=i)
         out, _ = capsys.readouterr()
@@ -40,5 +41,15 @@ def _check_batch(capsys, success_or_failure, exitcode):
 
 
 def test_matrix_check_failure(capsys):
-    _check_batch(capsys, 'success', 0)
-    _check_batch(capsys, 'failure', 1)
+    _check_batch(capsys, DATADIR + 'batch_check_success.yml', 'success', 0)
+    _check_batch(capsys, DATADIR + 'batch_check_failure.yml', 'failure', 1)
+
+
+def test_matrix_allow_failures(capsys):
+    m = Matrix(config_path=DATADIR + 'batch_allow_failures.yml')
+    m.execute(step=0)
+    m.execute(step=1)
+
+    out, _ = capsys.readouterr()
+    assert m.failed
+    assert out == 'foo'

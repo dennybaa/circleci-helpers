@@ -1,0 +1,9 @@
+matrix:
+  allow_failures:
+    - env: FOO=bar
+env:
+  - FOO=foo
+  - FOO=bar
+script:
+  - "[ $FOO = bar ] && exit 1 || :"
+  - "echo -n $FOO"

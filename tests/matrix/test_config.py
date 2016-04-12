@@ -64,3 +64,15 @@ def test_validate_schema_env_list():
     c = Config(config_data=yaml_data)
     with pytest.raises(YAMLFileValidationError):
         print c.config
+
+
+def test_default_config_pickup(tmpdir):
+    '''Test that defult config is loaded if it presents'''
+    yaml_data = "env:\n  - VERSION=foo\n  - VERSION=bar\n"
+    tmpdir.join('circle-matrix.yml').ensure().write(yaml_data)
+
+    with tmpdir.as_cwd():
+        c = Config()
+        data = c.load_config()
+
+    assert data['env'][1] == 'VERSION=bar'

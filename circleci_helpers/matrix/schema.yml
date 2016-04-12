@@ -10,6 +10,19 @@ mapping:
         # FOO=foo foo BAR="bar = bar" COO=coo = coo
         pattern: (\w+)=((.|\s)*?)((?=\w+=)|$)
 
+  "matrix":
+    type: map
+    mapping:
+      "allow_failures":
+        type: seq
+        sequence:
+          - type: map
+            mapping:
+              "env":
+                required: yes
+                type: str
+                pattern: (\w+)=((.|\s)*?)((?=\w+=)|$)
+
   "script":
     type: seq
     required: yes

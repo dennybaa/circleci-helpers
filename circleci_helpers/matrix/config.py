@@ -39,6 +39,8 @@ class Config(object):
 
         if self.config_path is None and not os.path.isfile(self.DEFAULT_CONFIG):
             self.config_path = '-'
+        elif os.path.isfile(self.DEFAULT_CONFIG):
+            self.config_path = self.DEFAULT_CONFIG
 
         if self.config_path == '-':
             self._config_data = sys.stdin.read()

@@ -1,3 +1,4 @@
 include dist_utils.py
 include requirements.txt
 include dev-requirements.txt
+include circleci_helpers/*/*.yml
