@@ -20,3 +20,12 @@ script:
 after_success:
   - coverage combine
   - coveralls
+
+deploy:
+  provider: pypi
+  user: dennybaa
+  password:
+    secure: bBSWTB4ppRQ7uMNsgPmEy20/oR8BW01rcYpYaOKzO5u4HnGX5l5Vuda79SIQNubdtxA5iW3BTANSnlO9hdBPaHW5L9PZTxRpOlRd4zNOeUIZcuBEtTh/vvTUiTQRqBaEau8aVT6m5kqQdk4rALJk6/WIGRw62/bqc88ANDUFeQymLOGWoklTkviQo8WY/CDhudWyi8RrA7dwrHLRhwkg1ygZxItwAuOk2IxgWRC83WmZRtNCV7ueEBoVHz+rJUIL2zE0boQKw3wPAAFzj3J4PrOo5/EKxAskfie36yYc4OHq9iAVgWNfY+5nvtasrNh0eUjpcxYFmBWwz0O0rDTp+As4CiLTP+pLrags+eCoel6TdiKzyT/So0jnV3JOSJmekMAfqfd0UXeynSZXybXnmewXygQjG1qhgphRs7hz3vQtSITBr6giPdYm1fRhO7pIBwBvY417ifpv6QpbA+PEpGQmRiW+jSR25fn8uQIq4157c5d62eGQ/hoD9K8F/Zuho47htgg79Fcas5Ayf30l39ukU7AXuNGWAwwgJ00HAjjwvZl5BvMrBrMqeH4/di94vfeeBsqnT+OIMwxXz6uaoHtU1HOrg56zAneeZ15DwoxzX0PGjywPRw/+AQVD4wn+87qOuhTQRuBSzcxAzRWR0fr+CN1JQnXpDDDcBioIRrg=
+  on:
+    tags: true
+    branch: master    
