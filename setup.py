@@ -13,7 +13,7 @@ install_reqs, dep_links = fetch_requirements(REQUIREMENTS_FILE)
 apply_vagrant_workaround()
 setup(
     name='circleci-helpers',
-    version='0.1.0',
+    version='0.1.1',
     description='Provides useful helpers for Circle CI',
     author='Denis Baryshev',
     author_email='dennybaa@gmail.com',
