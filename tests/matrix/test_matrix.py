@@ -48,8 +48,9 @@ def test_matrix_check_failure(capsys):
 def test_matrix_allow_failures(capsys):
     m = Matrix(config_path=DATADIR + 'batch_allow_failures.yml')
     m.execute(step=0)
+    assert not m._step_failure_allowed()
     m.execute(step=1)
+    assert m._step_failure_allowed()
 
     out, _ = capsys.readouterr()
-    assert m.failed
     assert out == 'foo'

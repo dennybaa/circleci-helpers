@@ -23,4 +23,9 @@ setup(
     include_package_data=True,
     license="MIT",
     url='https://github.com/dennybaa/circleci-helpers',
+    entry_points={
+        'console_scripts': [
+            'circle-matrix = circleci_helpers.matrix.main:main'
+        ]
+    }
 )

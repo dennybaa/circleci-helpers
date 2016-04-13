@@ -29,7 +29,7 @@ class Matrix(object):
         self.script_exitcode = 0
         self.batchenv = None
         self.step = None
-        self.failed = False
+        self.batch_terminated = False
 
     def get_matrixenv(self):
         '''Get matrix environment'''
@@ -39,15 +39,17 @@ class Matrix(object):
 
         return env
 
-    def failure_allowed(self):
+    def _step_failure_allowed(self):
+        '''Check if the last (current) step is allowed to fail,
+           due to allow_failures'''
         hashlist = self.config.get('matrix', {}).get('allow_failures', [])
 
         # by default failures are not allowed
         if len(hashlist) == 0:
             return False
 
-        # If batch environment variables value differs from the allowed
-        # then failure is not allowed.
+        # If any variable list from allow_failures fully satisfies the current
+        # batch environment then we allow failure.
         for ahash in hashlist:
             failenv = readenv(ahash['env'])
             allset = True
@@ -71,28 +73,32 @@ class Matrix(object):
             sys.exit(1)
 
         exitcode = self._execute(step)
-        if not self.failure_allowed and exitcode > 0:
+
+        # if any runners runners failed (except script), exit early
+        if self.batch_terminated:
             sys.exit(exitcode)
+
+        # Exit only if step failure not allowed and the script has failed
+        if not self._step_failure_allowed() and self.script_exitcode > 0:
+            sys.exit(self.script_exitcode)
 
     def _execute(self, step):
         # Brining matrix to initial state and set step number
         self.batchenv = None
         self.script_exitcode = 0
         self.step = step
+        self.batch_terminated = False
 
         for seq in self.SEQUENCE:
             try:
                 getattr(self, seq)()
             except BatchTerminated as e:
-                self.failed = True
+                self.batch_terminated = True
                 return e.exitcode
 
-        # Don't reset self.failed (it's already)
-        self.failed = True if self.failed else self.script_exitcode > 0
         return self.script_exitcode
 
     def before_script(self):
-        self.log.debug('Starting before_script execution')
         self.execute_batch('before_script')
 
     def script(self):
@@ -115,6 +121,8 @@ class Matrix(object):
         commands = self.config.get(batch_name, None)
         if not commands:
             return
+
+        self.log.debug('Starting %s execution', batch_name)
 
         # Execute batch runner with matrixenv and batchenv.
         # Matrix env stays immutable through all batch steps, while
