@@ -8,13 +8,20 @@ Project is intended to bring handy tools to make use of the Circle CI a bit more
 
 The big difference of Circle CI from Travis is the lack of Matrix builds support. This sometimes is really painful because the `circle.yml` becomes clumsy and hard to read. Just creating a matrix based on some environment variables turns into `if-bashery` with *$CIRCLE_NODE_INDEX* checks, readability degrades almost to zero.
 
+### Setting up the Python Environment
+Since the CircleCI comes with pre installed python versions ranging from 2.7 to 3.6.2 and uses pyenv to maintain the python envoronment, set the environment via the following command. 
+
+`pyenv global 3.5.2`
+
+More details on pyenv can be found [here](https://github.com/pyenv/pyenv#simple-python-version-management-pyenv)
+
 **circle-matrix** is a helper which can be used to create one-dimensional environment matrices using travis like syntax. For example:
 
 ```yaml
 dependencies:
   pre:
-    - sudo -H pip install --upgrade pip
-    - sudo -H pip install circleci-helpers
+    - pyenv global 3.5.2
+    - pip install circleci-helpers
 test:
   override:
     - ? | 
