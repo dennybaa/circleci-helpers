@@ -16,7 +16,7 @@
 
 import os
 
-from pip.req import parse_requirements
+from pkg_resources import parse_requirements
 
 __all__ = [
     'fetch_requirements',
