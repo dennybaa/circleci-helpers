@@ -13,7 +13,6 @@ The big difference of Circle CI from Travis is the lack of Matrix builds support
 ```yaml
 dependencies:
   pre:
-    - sudo -H pip install --upgrade pip
     - sudo -H pip install circleci-helpers
 test:
   override:
